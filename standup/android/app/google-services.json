@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "58134839933",
+    "firebase_url": "https://standuptest-8d545.firebaseio.com",
+    "project_id": "standuptest-8d545",
+    "storage_bucket": "standuptest-8d545.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58134839933:android:e53c08ee29e18995cee714",
+        "android_client_info": {
+          "package_name": "com.pranay.standup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58134839933-qr1et7f5nbb8g0t0j3ojohsgda98e18g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pranay.standup",
+            "certificate_hash": "572493b5d5e9e3d85c4ea2fdb70024c9fe43eb81"
+          }
+        },
+        {
+          "client_id": "58134839933-bd0ji2vmrshj3e4aapq7gkn0aqsp9129.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVGXJI-KmbXYWDkMUTErFRYCmWfSRBzdA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58134839933-bd0ji2vmrshj3e4aapq7gkn0aqsp9129.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
