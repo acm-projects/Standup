@@ -13,13 +13,16 @@ Attend a virtual comedy club where you choose to perform stand-up on-stage or to
 - Discover page, similar to Instagram, based on user profile, location and prefrences
 ## Dependencies
 
-### Mobile Development Environment
+## Mobile Development Environment
 > Theres a few choices here from Flutter, React Native, Native ios(Xcode/Swift), Native Android (Android Studio)
-
 Fluttter -> https://flutter.dev/docs
 React Native -> https://reactnative.dev/docs/getting-started
 iOS(Xcode/Swift) -> https://developer.apple.com/documentation/swift
 Android(Android Studio) -> https://developer.android.com/docs
+- Fluttter -> https://flutter.dev/docs
+- React Native -> https://reactnative.dev/docs/getting-started
+- iOS(Xcode/Swift) -> https://developer.apple.com/documentation/swift
+- Android(Android Studio) -> https://developer.android.com/docs
 
 ## Resources
 *Resources to check out*
@@ -27,6 +30,10 @@ https://www.twilio.com/blog/multi-party-calls-voip-gsm-programmable-voice
 https://www.twilio.com/voice/conference
 https://smartbear.com/blog/develop/adding-voip-to-mobile-apps/
 https://www.twilio.com/client/mobile
+- https://www.twilio.com/blog/multi-party-calls-voip-gsm-programmable-voice
+- https://www.twilio.com/voice/conference
+- https://smartbear.com/blog/develop/adding-voip-to-mobile-apps/
+- https://www.twilio.com/client/mobile
 
 
 ### Prototyping
