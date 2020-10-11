@@ -135,9 +135,8 @@ app.post('/session/:name', function(request, response) {
 
 
 // for heroku application to listen on their port
-var PORT = process.env.PORT || 3000;
 // callback function() runs once the application loads
-app.listen(PORT, function() {
+app.listen(process.env.PORT, function() {
 
     // display if app is working
     console.log('App is working!');
