@@ -27,6 +27,8 @@ require('dotenv').config();
 // create app server w/express
 const app = require('express')();
 
+
+
 // accesing opentok library and initializing opentok client
 const openTok = require('opentok');
 const OT = new openTok(process.env.API_KEY, process.env.API_SECRET);
@@ -132,11 +134,12 @@ app.post('/session/:name', function(request, response) {
 
 
 
-
+// creating port requirement - 3000 for local | process.env.PORT for heroku
+const PORT = process.env.PORT || 3000;
 
 // for heroku application to listen on their port
 // callback function() runs once the application loads
-app.listen(process.env.PORT, function() {
+app.listen(PORT, function() {
 
     // display if app is working
     console.log('App is working!');
