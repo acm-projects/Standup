@@ -1,0 +1,63 @@
+<html>
+    <head></head>
+    <body>
+        <h1>Session</h1>
+
+        <!-- the people sharing both video and audio in the call session -->
+        <h3>Publisher</h3>
+        <div id="publisher"></div>
+
+
+        <!-- the audience only watching the video, not also sharing video and audio -->
+        <h3>Subscriber</h3>
+        <!-- <button onclick="joinCall()">Join Call</button> -->
+        <div id="subscriber"></div>
+
+        <!-- for access to openTok client sdk in browser -->
+        <script src = "https://static.opentok.com/v2/js/opentok.min.js"></script>
+
+        <script>
+
+                fetch(location.pathname, {
+                method: 'POST'                  // sending 'POST' request to the server
+
+                }).then(function(response){     // changing server's response from ReadableStream into json format
+                return response.json();
+
+                }).then(function(data) {       // getting api_key, sessionid, and token from json response into 'data'
+
+                // initializing video call session 
+                const session = OT.initSession(data.apiKey, data.sessionId);
+
+                // creating size for publisher video
+                let publisherOptions = {
+                    insertMode: "append",
+                    height: "260px",
+                    width: "450px",
+                }
+
+                // creating publisher object to place the video call for the session into 'publisher' div
+                const publisher = OT.initPublisher('publisher', publisherOptions);
+
+                // connecting session to the publisher object
+                session.connect(data.token, function() {
+
+                    // publish the 'publisher' object to the session
+                    session.publish(publisher);
+                });
+                    
+                // for the subscribers who also enter the session
+                session.on('streamCreated', function(event) {
+                    
+                    session.subscribe(event.stream, 'subscriber');
+            })
+            
+
+            });
+
+        </script>
+
+
+
+    </body>
+</html>
