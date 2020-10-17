@@ -1,0 +1,7 @@
+{
+  "name": "Standup",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
