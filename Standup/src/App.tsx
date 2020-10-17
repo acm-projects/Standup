@@ -1,9 +1,14 @@
-import React, { useEffect } from 'react';
-import { Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/react';
+import React from 'react';
+import { Redirect, Route } from 'react-router-dom';
+import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
-import Menu from './components/Menu';
+/*Pages Imports */
+import Home from './pages/Home';
+
+
+/* Firebase Initialization */
+import * as firebase from 'firebase/app';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -23,91 +28,34 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import MainTabs from './pages/MainTabs';
-import { connect } from './data/connect';
-import { AppContextProvider } from './data/AppContext';
-import { loadConfData } from './data/sessions/sessions.actions';
-import { setIsLoggedIn, setUsername, loadUserData } from './data/user/user.actions';
-import Account from './pages/Account';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Support from './pages/Support';
-import Tutorial from './pages/Tutorial';
-import HomeOrTutorial from './components/HomeOrTutorial';
-import { Schedule } from "./models/Schedule";
-import RedirectToLogin from './components/RedirectToLogin';
 
-const App: React.FC = () => {
-  return (
-    <AppContextProvider>
-      <IonicAppConnected />
-    </AppContextProvider>
-  );
+// Firebase services initialization & configurations
+var firebaseConfig = {
+  apiKey: "AIzaSyCPDJA--fR3525vZXh_bkF-Piplurm5IJQ",
+  authDomain: "standuptest-8d545.firebaseapp.com",
+  databaseURL: "https://standuptest-8d545.firebaseio.com",
+  projectId: "standuptest-8d545",
+  storageBucket: "standuptest-8d545.appspot.com",
+  messagingSenderId: "58134839933",
+  appId: "1:58134839933:web:630bb5ef233e9a84cee714",
+  measurementId: "G-85RB1CTVEG"
 };
 
-interface StateProps {
-  darkMode: boolean;
-  schedule: Schedule;
-}
+firebase.initializeApp(firebaseConfig);
 
-interface DispatchProps {
-  loadConfData: typeof loadConfData;
-  loadUserData: typeof loadUserData;
-  setIsLoggedIn: typeof setIsLoggedIn;
-  setUsername: typeof setUsername;
-}
+// Main App
+const App: React.FC = () => (
 
-interface IonicAppProps extends StateProps, DispatchProps { }
-
-const IonicApp: React.FC<IonicAppProps> = ({ darkMode, schedule, setIsLoggedIn, setUsername, loadConfData, loadUserData }) => {
-
-  useEffect(() => {
-    loadUserData();
-    loadConfData();
-    // eslint-disable-next-line
-  }, []);
-
-  return (
-    schedule.groups.length === 0 ? (
-      <div></div>
-    ) : (
-        <IonApp className={`${darkMode ? 'dark-theme' : ''}`}>
-          <IonReactRouter>
-            <IonSplitPane contentId="main">
-              <Menu />
-              <IonRouterOutlet id="main">
-                {/*
-                We use IonRoute here to keep the tabs state intact,
-                which makes transitions between tabs and non tab pages smooth
-                */}
-                <Route path="/tabs" render={() => <MainTabs />} />
-                <Route path="/account" component={Account} />
-                <Route path="/login" component={Login} />
-                <Route path="/signup" component={Signup} />
-                <Route path="/support" component={Support} />
-                <Route path="/tutorial" component={Tutorial} />
-                <Route path="/logout" render={() => {
-                  return <RedirectToLogin
-                    setIsLoggedIn={setIsLoggedIn}
-                    setUsername={setUsername}
-                  />;
-                }} />
-                <Route path="/" component={HomeOrTutorial} exact />
-              </IonRouterOutlet>
-            </IonSplitPane>
-          </IonReactRouter>
-        </IonApp>
-      )
-  )
-}
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route path="/home" component={Home} exact={true} />
+          <Route exact path="/" render={() => <Redirect to="/home" />} />
+       
+        </IonRouterOutlet>
+      </IonReactRouter>
+      
+    </IonApp>
+);
 
 export default App;
-
-const IonicAppConnected = connect<{}, StateProps, DispatchProps>({
-  mapStateToProps: (state) => ({
-    darkMode: state.user.darkMode,
-    schedule: state.data.schedule
-  }),
-  mapDispatchToProps: { loadConfData, loadUserData, setIsLoggedIn, setUsername },
-  component: IonicApp
-});
