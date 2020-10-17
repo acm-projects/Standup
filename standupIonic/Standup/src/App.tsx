@@ -29,8 +29,6 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-import { UserContext, UserContextProvider } from './UserContextProvider';
-
 // Firebase services initialization & configurations
 var firebaseConfig = {
   apiKey: "AIzaSyCPDJA--fR3525vZXh_bkF-Piplurm5IJQ",

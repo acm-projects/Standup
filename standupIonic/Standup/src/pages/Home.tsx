@@ -1,10 +1,8 @@
-import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonPage } from '@ionic/react';
 import React, { useContext } from 'react';
 
 
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+
 import { UserContext } from '../UserContextProvider';
 import { firebaseLogin, firebaseLogout } from '../firebaseServices';
 
@@ -13,10 +11,11 @@ var OpenTok = require('opentok');
 var OTClient = require('@opentok/client');
 
 var sessionID = 0;
-var connectionID = 0;
 
-const apiKey = 46950334;
-const apiSecret = "0a5385cf4291179ab005da5ecff555e8c5b4637d";
+const apiKey = process.env.REACT_APP_OPENTOK_API_KEY;
+const apiSecret = process.env.REACT_APP_OPENTOK_API_SECRET;
+
+
 
 const OT = new OpenTok(apiKey, apiSecret);
 
@@ -28,7 +27,7 @@ OT.createSession({mediaMode:"routed"}, function(err, session) {
     // save the sessionId
     sessionID = session.sessionId;
     token = OT.generateToken(sessionID);
-    console.log("create:" + sessionID);
+    console.log("created session");
   });
 
 
@@ -43,10 +42,9 @@ var session;
 function initializeSession() {
 
   
-  console.log("initializeSession" + sessionID);
+  console.log("session ID: " + sessionID);
   session = OTClient.initSession(apiKey, sessionID);
 
-  // Subscribe to a newly created stream
 
   // Create a publisher
   var publisher = OTClient.initPublisher('publisher', handleError);
