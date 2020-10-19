@@ -9,6 +9,7 @@ import Home from './pages/Home';
 
 /* Firebase Initialization */
 import * as firebase from 'firebase/app';
+import firebaseConfig from './firebaseConfig.json';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -30,16 +31,6 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 // Firebase services initialization & configurations
-var firebaseConfig = {
-  apiKey: "AIzaSyCPDJA--fR3525vZXh_bkF-Piplurm5IJQ",
-  authDomain: "standuptest-8d545.firebaseapp.com",
-  databaseURL: "https://standuptest-8d545.firebaseio.com",
-  projectId: "standuptest-8d545",
-  storageBucket: "standuptest-8d545.appspot.com",
-  messagingSenderId: "58134839933",
-  appId: "1:58134839933:web:630bb5ef233e9a84cee714",
-  measurementId: "G-85RB1CTVEG"
-};
 
 firebase.initializeApp(firebaseConfig);
 
