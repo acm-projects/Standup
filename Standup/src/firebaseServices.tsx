@@ -10,6 +10,7 @@ const firebaseLogin = () => {
     firebase.auth().signInWithRedirect(googleAuthProvider) 
 };
 
+// Logout function
 const firebaseLogout = () => {
     firebase.auth().signOut();
 };
