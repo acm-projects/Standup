@@ -5,8 +5,7 @@ import 'firebase/app';
 // Necessary to define our own type that matches the firebase.User type so that react works
 type FirebaseContext = {
     user: firebase.User | null;
- 
-};
+ };
 
 // Creates react context for Firebase user
 const UserContext = React.createContext<Partial<FirebaseContext>>({});

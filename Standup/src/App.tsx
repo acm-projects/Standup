@@ -5,11 +5,8 @@ import { IonReactRouter } from '@ionic/react-router';
 
 /*Pages Imports */
 import Home from './pages/Home';
+import Login from './pages/Login';
 
-
-/* Firebase Initialization */
-import * as firebase from 'firebase/app';
-import firebaseConfig from './firebaseConfig.json';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -29,18 +26,19 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { useFirebaseUser } from './firebaseServices';
 
 // Firebase services initialization & configurations
 
-firebase.initializeApp(firebaseConfig);
+
 
 // Main App
 const App: React.FC = () => (
-
+    
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route path="/home" component={Home} exact={true} />
+          <Route path="/home" component={useFirebaseUser() ? Home : Login} exact={true} />
           <Route exact path="/" render={() => <Redirect to="/home" />} />
        
         </IonRouterOutlet>

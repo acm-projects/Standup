@@ -1,94 +1,126 @@
+import { connected } from 'process';
+import { db, currentUser} from '../firebaseServices';
+
+
 var OpenTok = require('opentok');
 var OTClient = require('@opentok/client');
-
-var sessionID = 0;
 
 const apiKey = process.env.REACT_APP_OPENTOK_API_KEY;
 const apiSecret = process.env.REACT_APP_OPENTOK_API_SECRET;
 
 
 
-const OT = new OpenTok(apiKey, apiSecret);
 
+var OT = new OpenTok(apiKey, apiSecret);
+var Session;
+var connectedToSession = false;
 
-// Handling all of our errors here by alerting them
-function handleError(error) {
-    if (error) {
-        alert(error.message);
-    }
+// Makes an OpenTok session server-side
+function makeSession() {
+  
+  OT.createSession({mediaMode: "routed"}, function(error, session) {
+    if (error) return console.log(error);
+    
+    var sessionID = session.sessionId;
+
+    db.collection('users').doc(currentUser?.uid).update({"currentSessionID": sessionID})
+    console.log("sessionID: " + sessionID)
+    
+    var token = session.generateToken();
+    db.collection('users').doc(currentUser?.uid).update({"OTToken": token})
+    connectToSession(token, sessionID);
+    
+          
+  }); 
+  
+  
 }
 
-// The session will the OpenTok Media Router:
-
-OT.createSession({mediaMode:"routed"}, function(err, session) {
-    if (err) return console.log(err);
-
-    // save the sessionId
-    sessionID = session.sessionId;
-    
-    console.log("created session");
-
-    });
 
 
-var session;
-var publisher;
-var subscriber;
+// Publishes an audio-video feed to the session
+function publishSession() {
+  var publisher = OTClient.initPublisher({insertMode: "after"}, {resolution: '1280x720', frameRate: 30});
+  try {
+    if (Session != undefined) {
+      Session.publish(publisher, function(error) {
+        if (error) console.log(error);
+        else console.log("Publishing Session");
+      });
+      publisher.on('streamCreated', function (event) {
+        console.log('The publisher started streaming.');
+      });
+    }
+  } catch (e) {
+      console.log("Unable to Publish");
+  };
+}
 
-// Initialize a session
-function initializeSession() {
 
-  
-  console.log("session ID: " + sessionID);
-  session = OTClient.initSession(apiKey, sessionID);
-  
-  var token = OT.generateToken(sessionID, {
-      role: 'publisher'
-    });
-  
+// Connects and subscribes user to a session on client-side
+var connectionCount = 0;
 
-  // Create a publisher
-  publisher = OTClient.initPublisher('publisher', handleError);
+function connectToSession(token, sessionID) {
 
-  // Connect to the session
-  session.connect(token, function(error) {
-    // If the connection is successful, publish to the session
-    if (error) {
-      handleError(error);
-    } else {
-      session.publish(publisher, handleError);
+  Session = OTClient.initSession(apiKey, sessionID);
+  Session.on({
+    connectionCreated: function (event) {
+      console.log(connectionCount + ' connections.');
+    },
+    connectionDestroyed: function (event) {
+      connectionCount--;
+      console.log(connectionCount + ' connections.');
+    },
+    sessionDisconnected: function sessionDisconnectHandler(event) {
+      // The event is defined by the SessionDisconnectEvent class
+      console.log('Disconnected from the session.');
+      //document.getElementById('disconnectBtn').style.display = 'none';
+      if (event.reason == 'networkDisconnected') {
+        alert('Your network connection terminated.')
+      }
+      connectionCount--;
     }
   });
-
+  Session.on("streamCreated", function(event) {
+    Session.subscribe(event.stream);
+  });
+  // Replace token with your own value:
+  Session.connect(token, function(error) {
+    if (error) {
+      console.log('Unable to connect: ', error.message);
+    } else {
+      //document.getElementById('disconnectBtn').style.display = 'block';
+      console.log('Connected to the session.');
+      connectionCount++;
+      connectedToSession = true;
+    }
+  });
 }
 
-
-
-
-// Join the session
-function joinSession() {
-    var token = OT.generateToken(sessionID, {
-        role: "subscriber"
-    });
-
-    session.connect(token, function(error) {
-        if (error) {
-              console.log("Error connecting: ", error.name, error.message);
-        } else {
-              console.log("Connected to the session.");
-        }
-    });
-    console.log(sessionID)
-}
-
-
-
+// Disconnects user from a session and updates Firebase-Firestore data for that user
 function disconnect() {
-  session.disconnect();
+  if (Session)
+    Session.disconnect();
+    db.collection("users").doc(currentUser?.uid).update({
+      "OTToken": "",
+      "currentSessionID": ""
+    });
+}
+
+
+
+
+
+
+function getSession() {
+  return Session;
 }
 
 export {
-    disconnect,
-    initializeSession,
-    joinSession,
+  makeSession,
+  connectToSession,
+  publishSession,
+  disconnect,
+  getSession,
+  
 }

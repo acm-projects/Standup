@@ -1,36 +1,32 @@
 import { IonButton, IonContent, IonPage } from '@ionic/react';
-import React, { useContext } from 'react';
+import React from 'react';
 
+import { db, firebaseLogout , useFirebaseUser, useDatabase} from '../firebaseServices';
 
-
-import { UserContext } from '../UserContextProvider';
-import { firebaseLogin, firebaseLogout } from '../firebaseServices';
-
-import {initializeSession, disconnect, joinSession} from './opentokServices';
-
+import { makeSession, connectToSession, publishSession, disconnect, getSession} from './opentokServices';
 
 const Home: React.FC = () => {
 
-
-  const currentUser = useContext(UserContext);
-
+  var token = useDatabase("users", "B3ylsUbJZnUe2gNnAeJuPZPCprD3", "OTToken");
+  var sessionID = useDatabase("users", "B3ylsUbJZnUe2gNnAeJuPZPCprD3", "currentSessionID");
+  var user = useFirebaseUser();
+  
   return (
     <IonPage>
      
-     <IonContent>
+    <IonContent>
 
       Home
-      
-      <p>User: {currentUser.user?.displayName}</p>
-      <p>Email: {currentUser.user?.email}</p>      
-
-      <IonButton onClick={currentUser.user ? firebaseLogout: firebaseLogin}>
-        Login/Logout      
-      </IonButton>
-      <IonButton onClick={initializeSession}>Create a Vonage Session</IonButton>
+      <p>UID: {user?.uid}</p>
+      <p>Token: {token}</p>
+      <p>SessionID: {sessionID}</p>
+      <p>Email: {user?.email}</p>      
+      <p>Is connected? {(sessionID == "") ? "False" : "True"}</p>
+      <IonButton onClick={firebaseLogout}>Logout</IonButton>
+      <IonButton onClick={makeSession}>Create a Session</IonButton>
+      <IonButton onClick={() => {connectToSession(token, sessionID)}}>Connect</IonButton>
       <IonButton onClick={disconnect}>Disconnect</IonButton>
-      
-      <IonButton onClick={joinSession}>Join</IonButton>
+      <IonButton onClick={(sessionID == "") ? () => {console.log("Not connected, cannot publish!")} : publishSession}>Publish Session</IonButton>
 
 
       </IonContent>
