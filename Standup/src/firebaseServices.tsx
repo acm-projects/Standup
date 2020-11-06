@@ -3,6 +3,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { forEachChild } from 'typescript';
 import firebaseConfig from './firebaseConfig.json';
 const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 
@@ -21,8 +22,10 @@ function firebaseLogin() {
 // Logout function
 function firebaseLogout() {
     db.collection("users").doc(currentUser?.uid).update({
-        "OTToken": "",
-        "currentSessionID": ""
+        "OTToken": "null",
+        "currentSessionID": "null",
+        "isPublisher" : false,
+        "connectionID": "null"
     });
     firebase.auth().signOut();
     
@@ -40,15 +43,17 @@ function addUserToFirestore(user: firebase.User | null) {
                 db.collection('users').doc(user?.uid).update({
                     "displayName": user?.displayName,
                 });
-                console.log("updated user in database");
+                //console.log("updated user in database");
             }
             else {
                 db.collection('users').doc(user?.uid).set({
                     "displayName": user?.uid,
-                    "OTToken": "",
-                    "currentSessionID": ""
+                    "OTToken": "null",
+                    "currentSessionID": "null",
+                    "isPublisher": false,
+                    "connectionID": "null",
                 });
-                console.log("added user to database");
+                //console.log("added user to database");
             }
         });
     }
@@ -76,27 +81,77 @@ function useFirebaseUser() {
  
 // Custom react Hook function 
 function useDatabase(collectionID, docID, fieldID) {
-    console.log("collection: " + collectionID + " | doc: " + docID + " | field: " + fieldID);
+    //console.log("collection: " + collectionID + " | doc: " + docID + " | field: " + fieldID);
     const [fieldData, setFieldData] = useState("null");
     useEffect(() => {
         db.collection(collectionID).doc(docID).onSnapshot((snapshot) => {
             const newData = snapshot.data();
-            console.log(newData);
-            if (newData !== undefined) 
-                setFieldData(newData[fieldID]);
-            });
+            //console.log(newData);
             
-        }, []);
-    console.log("fieldData: " + fieldData);
+            if (newData != undefined) {
+                setFieldData(newData[fieldID]); 
+
+                
+            }
+            
+        });
+            
+         
+
+    }, [collectionID, docID, fieldID]);
+    //console.log("fieldData: " + fieldData);
+
+    
+
     return fieldData;
 }
 
+// Returns an entire collection from firebase firestore
+function useCollection(collectionID) {
+    const [collection, setCollection] = useState(undefined as firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>[] | undefined);
+  
+    useEffect(() => {
+      db.collection(collectionID).onSnapshot((snapshot) => {
+        const allDocs = snapshot.docs;
+        setCollection(allDocs);
+      });
+  
+    }, [collectionID]);
+    
+    return collection;
+}
+
+// Returns collection of all users in a session
+function useUsersInSession(sessionID) {
+    const [users, setUsers] = useState<string[]>([]);
+  
+    useEffect(() => {
+      db.collection("users").where("currentSessionID", "==", sessionID).onSnapshot((snapshot) => {
+        const allDocs = snapshot.docs;
+        let set = new Set<string>();
+        allDocs.forEach((doc) => {
+            const newData = doc.data();
+            if (newData != undefined) {
+                set.add(newData["connectionID"]);
+            }
+        })
+        let arr = Array.from(set);
+        console.log("SessionID: " + sessionID + " | [" + arr.toString() + "]");
+        setUsers(arr);
+      });
+  
+    }, [sessionID]);
+    
+    return users;
+}
 
 export {
     firebaseLogin,
     firebaseLogout,
     useFirebaseUser,
     useDatabase,
+    useCollection,
+    useUsersInSession,
     db,
     currentUser,
 }

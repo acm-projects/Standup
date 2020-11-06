@@ -1,6 +1,6 @@
 import { IonButton, IonContent, IonPage } from '@ionic/react';
 import React from 'react';
-import { db, firebaseLogin } from '../firebaseServices';
+import { firebaseLogin } from '../firebaseServices';
 
 
 const Login: React.FC = () => {
