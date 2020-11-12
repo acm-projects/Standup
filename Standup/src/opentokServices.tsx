@@ -80,8 +80,9 @@ function publishSession(uid, sessionID) {
   addSession(uid, sessionID);
   
   var session = getClientSession(uid, sessionID);
-  
-  var publisher = OTClient.initPublisher({insertMode: "after"}, {resolution: '1280x720', frameRate: 30});
+  var videoTarget = document.getElementById('videoTarget');
+
+  var publisher = OTClient.initPublisher(videoTarget, { insertMode: "replace" }, { resolution: '1280x1280', frameRate: 30 });
   sessionsMap.get(sessionID).publisher = publisher;
 
   try {
@@ -174,7 +175,8 @@ function connectToSession(uid, sessionID, isPublisher) {
     },
     streamCreated: function (event) {
       if (sessionsMap.get(sessionID).subscriber == undefined) {
-        sessionsMap.get(sessionID).subscriber = session.subscribe(event.stream);
+        var videoTarget = document.getElementById('videoTarget');
+        sessionsMap.get(sessionID).subscriber = session.subscribe(event.stream, videoTarget);
         console.log("subscribed to stream");
       }
     }, 
