@@ -10,7 +10,7 @@ Attend a virtual comedy club where you choose to perform stand-up on-stage or to
 ### Future Plans
 - User Profile -> Ability to see stats on performance, graphs of performance over time, etc. Allow them to have a deep data dive into their performance so they can see their growth over time. Data is beautiful
 - Leaderboard with score -> based on someone performance they are given a score, so there would be live rankings based on region and score which would feature the top comedians on the platform
-- Enhanced discover page, similar to Instagram, based on user profile, location and preferences
+- Enhanced discover page based on user profile, location, and preferences
 
 ### Tech Stack
 - [Ionic Framework](https://ionicframework.com/docs)
