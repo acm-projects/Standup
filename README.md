@@ -15,7 +15,7 @@ Attend a virtual comedy club where you choose to perform stand-up on-stage or to
 ### Tech Stack
 - [Ionic Framework](https://ionicframework.com/docs)
   - Utilizes React components to create a [progressive web app](https://web.dev/what-are-pwas/)
-  - Allows app to run on iOS, Android, and web (with native applications constructed using [Capacitor](https://capacitorjs.com/))
+  - Allows app to run on iOS, Android, and web (with native applications built using [Capacitor](https://capacitorjs.com/))
 - [Firebase](https://firebase.google.com/)
   - Authentication, Hosting, and Cloud Firestore database
 - [Vonage Video API](https://www.vonage.com/communications-apis/video/)
